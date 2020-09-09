@@ -22,17 +22,22 @@ persistErdos(8^68764)=22	// ML
 persistErdos(8^149497)=23	// ML
 persistErdos(8^314985)=24	// ML
 persistErdos(8^744484)=25	// JC
-persistErdos(8^8915882)=26 // JC checked
+persistErdos(8^1525361)=26	// ML
+persistErdos(8^6728155)=27	// ML
+persistErdos(8^???)=28
+persistErdos(8^???)=29
 */
 
 $n=1; if (isset($argv[1])){ $n=1*$argv[1]; }
 $digit=8; if (isset($argv[2])) $digit=$argv[2];
 
-$decal=15;
+// if working with huge numbers, uncomment next line
+// ini_set("memory_limit", "4096M");
+$decal=15; // if you have enough memory, use $decal=16 : it will consume more memory but will be faster
 $precalc=1<<$decal;
 echo "precalc x^$precalc...";
 echo "(decal=$decal precalc=$precalc) ";
-$tp=array();	// used to precalc for each digit digit^256
+$tp=array();	// used to precalc for each digit : digit^1, digit^2, digit^3, ...
 for($j=2;$j<10;$j++){
 	echo "$j ";
 	$tp[$j]=array();
@@ -71,9 +76,7 @@ for(;;){
 		fclose($f);
 	}
 	$n++;
-	// echo $keep." * ".$digit;
-	$keep=gmp_mul($keep, $digit);
-	// echo " = ".$keep."\n";
+	if ($digit==2) $keep=gmp_add($keep, $keep); else $keep=gmp_mul($keep, $digit);
 }
 die("ok");
 function persistErdosOptSecond($a){
