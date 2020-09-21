@@ -9,7 +9,7 @@ include("inc_mulperErdos.php");
 
 $digit=8; if (isset($argv[1])) $digit=$argv[1];
 $n=314985; if (isset($argv[2])){ $n=1*$argv[2]; }
-$pmin=999; if (isset($argv[3])){ $pmin=1*$argv[3]; }
+$pmin=0; if (isset($argv[3])){ $pmin=1*$argv[3]; }
 
 $fmax="max_${digit}_from${n}.txt";
 $nDeb=$n;
@@ -27,7 +27,7 @@ for(;;){
 	$t2=microtime(true);
 	if (!isset($best[$p])){
 		$best[$p]=$n;
-		if ($p>=$pmin)){
+		if ($p>=$pmin){
 			echo "p($digit"."^"."$n)=$p ".number_format($t2-$t1, 3, "'", "")."\n";
 			$f=fopen($fmax,"a");
 			fwrite($f, "$digit^$n=$p\n");
