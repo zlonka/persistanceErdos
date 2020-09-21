@@ -24,7 +24,7 @@ function persistErdosStr(string $str){
 	if ($len<=1) return 1;
 	$occ=array();
 	for($j=0;$j<10;$j++) $occ[$j]=0;
-	for($j=0;$j<$len;$j++) $occ[$str{$j}]++;
+	for($j=$len-1;$j>=0;$j--) $occ[$str[$j]]++;
 	$a=1;
 	for($k=2;$k<10;$k++){
 		if ($occ[$k]) $a *= gmp_pow($k, $occ[$k]);
@@ -38,7 +38,7 @@ function persistErdosGMP(GMP $a){
 		$len=strlen($str);
 		if ($len<=1) return $i;
 		for($j=0;$j<10;$j++) $occ[$j]=0;
-		for($j=0;$j<$len;$j++) $occ[$str{$j}]++;
+		for($j=$len-1;$j>=0;$j--) $occ[$str[$j]]++;
 
 		$a=1;
 		for($k=2;$k<10;$k++){
