@@ -9,3 +9,8 @@ Ex de temps de calcul :<br/>
 p(8^1489223)=25 1'296
 </pre>
 Merci à Julien Courties pour ses échanges et son idée d'optimisation en regoupant les chiffres de N.<br/>
+<br/>
+<i>23/09/2020</i> : Ajout d'une version en C++ pour Linux, qui est 4x plus rapide :)
+<pre>&gt;pErdos 9 590000108<br/>
+p(8^1489223)=25 (in 0.425 s)
+</pre>
