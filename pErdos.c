@@ -16,33 +16,33 @@ pmin is used to display only results with p(x)>=pmin
 #include "gmp.h"
 
 char *str;
-int persistErdosGMP(mpz_t keep){
+int persistErdosGMP(mpz_t *v){
 	int i, occ[10];
 	mpz_t a;
 	mpz_init(a);
-	mpz_set(a, keep);
-	// printf("persistErdosGMP("); gmp_printf("%Zd", keep); printf(")...\n");
-	mpz_t k;
+	mpz_set(a, *v);
 	for(i=1;;i++){
-		// printf("i=%d ", i); gmp_printf("a=%Zd\n", a);
-		gmp_sprintf(str, "%Zd", a);
+		mpz_get_str(str, 10, a);	// gmp_sprintf(str, "%Zd", a);
 		int len=strlen(str);
 		if (len<=1){
-			mpz_clear (a);
+			mpz_clear(a);
 			return i;
 		}
 		for(int j=0;j<10;j++) occ[j]=0;
 		for(int j=len-1;j>=0;j--) occ[str[j]-'0']++;
+		mpz_clear(a);	// prevent memory leak...
 
 		mpz_init_set_ui(a, 1);
 		mpz_init(k);
 		for(int j=2;j<10;j++){
 			if (!occ[j]) continue;
-			mpz_ui_pow_ui(k, j, occ[j]);
-			mpz_mul(a, a, k);
+			mpz_t k;
+			mpz_init(k);
+			mpz_ui_pow_ui(k, j, occ[j]);	// k = j ^ occ[j]
+			mpz_mul(a, a, k);		// a *= k
+			mpz_clear(k);
 		}
 	}
-	mpz_clear(k);
 	mpz_clear(a);
 	return i;
 }
@@ -65,7 +65,8 @@ int main(int argc, char *argv[]){
 	sprintf(fSave, "pErdos_%d_%d.txt", digit, nDeb);
 
 	printf("alloc...");
-	str=(char*)malloc((n+1)*sizeof(char));
+	str=(char*)malloc((n+1000000)*sizeof(char));	// get space for 1M digits more
+	if (str==(char*)NULL){ fprintf(stderr, "Can't alloc memory...\n"); exit(1); }
 	printf("done.\n");
 
 	printf("compute first...");
@@ -84,7 +85,7 @@ int main(int argc, char *argv[]){
 	for(;nmax==0 || n<nmax;n++){
 		printf("%d..%d%c", nDeb, n, 13);
 		clock_t t1=clock();
-		int p=persistErdosGMP(keep);
+		int p=persistErdosGMP(&keep);
 		clock_t t2=clock();
 		if (best[p]==0){
 			best[p]=n;
