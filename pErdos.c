@@ -33,7 +33,6 @@ int persistErdosGMP(mpz_t *v){
 		mpz_clear(a);	// prevent memory leak...
 
 		mpz_init_set_ui(a, 1);
-		mpz_init(k);
 		for(int j=2;j<10;j++){
 			if (!occ[j]) continue;
 			mpz_t k;
