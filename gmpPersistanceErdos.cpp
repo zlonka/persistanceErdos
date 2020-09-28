@@ -1,5 +1,7 @@
-// gmpPersistanceErdos.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
-//
+// gmpPersistanceErdos.cpp : multiplicative persistence (Erdos mode) computation of numbers ddd...ddd (d n times)
+// usage: gmpPersistanceErdos.exe d n [nmax] [pmin]
+// ex: gmpPersistanceErdos.exe 9 7008258 7008300 18
+// for all numbers N=9999...99999 with between 7008258 and 7008300 digits,  displays persistenceErdos(N) if it's >= 18
 
 #pragma warning (disable : 4146)
 
@@ -13,13 +15,9 @@ int persistErdosGMP(mpz_t *keep) {
 	int i, occ[10];
 	mpz_t a;
 	mpz_init(a);
-	// mpz_set_ui(a, 1);
 	mpz_set(a, *keep);
-	// printf("persistErdosGMP("); gmp_printf("%Zd", keep); printf(")...\n");
 	for (i = 1;; i++) {
-		// printf("i=%d ", i); gmp_printf("a=%Zd\n", a);
-		// gmp_sprintf(str, "%Zd", a);
-		mpz_get_str(str, 10, a);
+		mpz_get_str(str, 10, a);	// gmp_sprintf(str, "%Zd", a);
 		// fprintf(stderr, "i=%d str=%s\n", i, str);
 		int len = strlen(str);
 		if (len <= 1) {
@@ -33,12 +31,10 @@ int persistErdosGMP(mpz_t *keep) {
 		mpz_init_set_ui(a, 1);
 		for (int j = 2; j < 10; j++) {
 			if (!occ[j]) continue;
-			// gmp_printf("j=%d a=%Zd\n", j, a);
 			mpz_t k;
 			mpz_init(k);
 			mpz_set_ui(k, 1);
 			mpz_ui_pow_ui(k, j, occ[j]);
-			// printf("i=%d j=%d occ[j]=%d ksize=%d kmalloc=%d\n", i, j, occ[j], k->_mp_size, k->_mp_alloc);
 			mpz_mul(a, a, k);
 			mpz_clear(k);
 		}
