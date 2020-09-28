@@ -2,6 +2,7 @@
 // usage: gmpPersistanceErdos.exe d n [nmax] [pmin]
 // ex: gmpPersistanceErdos.exe 9 7008258 7008300 18
 // for all numbers N=9999...99999 with between 7008258 and 7008300 digits,  displays persistenceErdos(N) if it's >= 18
+// needs https://github.com/ShiftMediaProject/gmp/releases/download/6.2.1-1/libgmp_6.2.1-1_msvc16.zip
 
 #pragma warning (disable : 4146)
 
