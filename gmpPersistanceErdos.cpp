@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 	sprintf_s(fSave, "pErdos_%d_%d.txt", digit, nDeb);
 
 	printf("alloc %.1lf Mb...", ((double)n*0.000001) );
-	str = (char*)malloc((n + 10000) * sizeof(char));
+	str = (char*)malloc((n + 1000000) * sizeof(char));	// get space for n + 1M
 	if (str==(char*)NULL){ fprintf(stderr, "Can't alloc memory...\n"); exit(1); }
 	printf("done.\n");
 
