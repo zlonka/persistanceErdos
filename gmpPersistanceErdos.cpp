@@ -11,7 +11,12 @@
 
 #include "C:\Users\m\Documents\dev\cpp\libgmp_6.2.1-1_msvc16\include\gmp.h"
 
+// used for conversion to string
 char* str;
+
+// optimize persistErdosGMP by minimizing multiplications (only x 2,3,5,6,7 instead of x 2,3,4,5,6,7,8,9)
+#define OPTIM 1
+
 int persistErdosGMP(mpz_t *keep) {
 	int i, occ[10];
 	mpz_t a;
@@ -30,6 +35,49 @@ int persistErdosGMP(mpz_t *keep) {
 		mpz_clear(a);	// !!!! prevent memory leak :)
 
 		mpz_init_set_ui(a, 1);
+
+		if (OPTIM) {
+			// optimize occ : remove 4s, 8s, 9s, 25s, 66s, 56s
+			// replace 4 by 22
+			occ[2] += 2 * occ[4]; occ[4] = 0;
+			// replace 8 by 222
+			occ[2] += 3 * occ[8]; occ[8] = 0;
+			// replace 9 by 33
+			occ[3] += 2 * occ[9]; occ[9] = 0;
+
+			// replace 25 by nothing, because 2*5=10=not usefull for multiplication
+			// BUT dont remove all : let a single 25 to prevent case 22557 => 7 instead of 22557 => 700 => 7
+			// so by letting a single 25 it is ok : 22557 => 70 => 1
+			if (occ[5]>1) {
+				int nb5moins1 = occ[5] - 1;
+				if (occ[2] > nb5moins1) {
+					occ[2] -= nb5moins1;
+					occ[5] -= nb5moins1;
+				}
+				else if (occ[2]>1) {
+					int nb2moins1 = occ[2] - 1;
+					occ[5] -= nb2moins1;
+					occ[2] = 1;
+				}
+			}
+			// replace 66 by 2233, because 6*6 = 36 = 2*2*3*3
+			int nbEntier = occ[6] >> 1;
+			if (nbEntier) {
+				nbEntier >>= 1;
+				occ[6] -= nbEntier;
+				occ[2] += nbEntier;
+				occ[3] += nbEntier;
+			}
+			
+			// replace 56 by 3, because 5*6=30=3
+			if (occ[6] && occ[5]) {
+				int nb56 = occ[6] < occ[5] ? occ[6] : occ[5];
+				occ[3] += nb56;
+				occ[5] -= nb56;
+				occ[6] -= nb56;
+			}
+		}
+		
 		for (int j = 2; j < 10; j++) {
 			if (!occ[j]) continue;
 			mpz_t k;
